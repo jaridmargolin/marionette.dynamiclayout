@@ -1,9 +1,9 @@
 marionette.dynamicLayout [![Build Status](https://travis-ci.org/jaridmargolin/bouncefix.js.png)](https://travis-ci.org/jaridmargolin/marionette.dynamicLayout)
 ========================
 
-**marionette.layoutViews** Mange layouts and views via controllers.
+Manage layouts and views via controllers.
 
-```
+```js
 var AppController = new LayoutController({
 
   // All regions created within the layout will have a dynamically
@@ -36,7 +36,7 @@ var MenuSecondaryView = Marionette.ItemView.extend({
 });
 ```
 
-```
+```js
 // First show primary menu
 commander.execute('app:sidebar:show', 'primary', {
   Controller: ItemController,

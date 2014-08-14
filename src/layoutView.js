@@ -68,7 +68,7 @@ return Marionette.LayoutView.extend({
     delete props.tmpl;
 
     // Create our el region
-    var $region = $(tmpl(props));
+    var $region = $(_.template(tmpl, props));
 
     // Append templateted html
     this.$regions = this.$regions || {};

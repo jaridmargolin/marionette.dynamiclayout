@@ -15,9 +15,6 @@ module.exports = function (grunt) {
 // Load all grunt tasks
 require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-// Load assemble which does not follow naming convention
-grunt.loadNpmTasks('assemble');
-
 
 // Browsers
 var browsers = [
@@ -51,8 +48,7 @@ grunt.initConfig({
     src: [
       'Gruntfile.js',
       'src/**/*.js',
-      'test_*/**/*.js',
-      '!src/tmpls/**/*.js'
+      'test_*/**/*.js'
     ],
     options: {
       jshintrc: '.jshintrc',
@@ -67,7 +63,6 @@ grunt.initConfig({
 
   'clean': {
     js: ['dist/js'],
-    tmpls: ['src/tmpls'],
     build: ['dist/*.*']
   },
 
@@ -101,25 +96,6 @@ grunt.initConfig({
 
 
   // --------------------------------------------------------------------------
-  // Precompile templates
-  // --------------------------------------------------------------------------
-
-  'handlebars': {
-    options: {
-      amd: true,
-      namespace: false
-    },
-    tmpls: {
-      expand: true,
-      src: ['**/*.html'],
-      cwd: 'tmpls',
-      dest: 'src/tmpls',
-      ext: '.js'
-    }
-  },
-
-
-  // --------------------------------------------------------------------------
   // WATCH FILES
   // --------------------------------------------------------------------------
 
@@ -132,17 +108,12 @@ grunt.initConfig({
       tasks: ['build'],
       options: { livereload: true }
     },
-    tmpls: {
-      files: ['tmpls/**/*.html'],
-      tasks: ['build:tmpls'],
-      options: { livereload: true }
-    },
     tests: {
       files: ['test_*/**/*.*'],
       options: { livereload: true }
     },
     js: {
-      files: ['src/**/*.js', '!src/tmpls/**/*.js'],
+      files: ['src/**/*.js'],
       tasks: ['build:js'],
       options: { livereload: true }
     }
@@ -193,9 +164,8 @@ grunt.initConfig({
 grunt.registerTask('default', ['build']);
 
 // BUILD
-grunt.registerTask('build', ['build:js', 'build:tmpls']);
+grunt.registerTask('build', ['build:js']);
 grunt.registerTask('build:js', ['clean:js', 'jshint', 'copy:js']);
-grunt.registerTask('build:tmpls', ['clean:tmpls', 'handlebars']);
 
 // TEST
 grunt.registerTask('test', ['test-local']);

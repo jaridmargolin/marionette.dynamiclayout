@@ -1,4 +1,4 @@
-marionette.dynamicLayout [![Build Status](https://travis-ci.org/jaridmargolin/bouncefix.js.png)](https://travis-ci.org/jaridmargolin/marionette.dynamicLayout)
+marionette.dynamiclayout [![Build Status](https://travis-ci.org/jaridmargolin/marionette.dynamiclayout.png)](https://travis-ci.org/jaridmargolin/marionette.dynamiclayout)
 ========================
 
 Manage layouts and views via controllers.

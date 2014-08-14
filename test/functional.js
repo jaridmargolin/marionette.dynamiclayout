@@ -10,11 +10,11 @@ define([
   'sinon',
   'backbone',
   'marionette',
-  'dynamicLayout/commander',
-  'dynamicLayout/layoutView',
-  'dynamicLayout/itemView',
-  'dynamicLayout/layoutController',
-  'dynamicLayout/itemController',
+  'dynamiclayout/commander',
+  'dynamiclayout/layoutView',
+  'dynamiclayout/itemView',
+  'dynamiclayout/layoutController',
+  'dynamiclayout/itemController',
 ], function ($, assert, sinon, Backbone, Marionette, commander, LayoutView, ItemView, LayoutController, ItemController) {
 
 

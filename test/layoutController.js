@@ -9,12 +9,12 @@ define([
   'marionette',
   'proclaim',
   'sinon',
-  'dynamicLayout/commander',
-  'dynamicLayout/tmpls/region',
-  'dynamicLayout/itemView',
-  'dynamicLayout/layoutView',
-  'dynamicLayout/itemController',
-  'dynamicLayout/layoutController'
+  'dynamiclayout/commander',
+  'dynamiclayout/tmpls/region',
+  'dynamiclayout/itemView',
+  'dynamiclayout/layoutView',
+  'dynamiclayout/itemController',
+  'dynamiclayout/layoutController'
 ], function (_, Marionette, assert, sinon, commander, regionTmpl, ItemView, LayoutView, ItemController, LayoutController) {
 
 

@@ -7,8 +7,8 @@
 define([
   'proclaim',
   'sinon',
-  'dynamicLayout/layoutView',
-  'dynamicLayout/tmpls/region'
+  'dynamiclayout/layoutView',
+  'dynamiclayout/tmpls/region'
 ], function (assert, sinon, LayoutView, tmpl) {
 
 

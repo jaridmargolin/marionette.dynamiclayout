@@ -6,9 +6,9 @@
 
 define([
   'underscore',
-  'dynamicLayout/itemController',
-  'dynamicLayout/commander',
-  'dynamicLayout/layoutView'
+  'dynamiclayout/itemController',
+  'dynamiclayout/commander',
+  'dynamiclayout/layoutView'
 ], function (_, itemController, commander, LayoutView) {
 
 

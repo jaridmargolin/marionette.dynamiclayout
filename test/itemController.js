@@ -8,8 +8,8 @@ define([
   'proclaim',
   'sinon',
   'marionette',
-  'dynamicLayout/itemView',
-  'dynamicLayout/itemController',
+  'dynamiclayout/itemView',
+  'dynamiclayout/itemController',
 ], function (assert, sinon, Marionette, ItemView, ItemController) {
 
 

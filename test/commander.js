@@ -8,7 +8,7 @@ define([
   'proclaim',
   'sinon',
   'backbone.wreqr',
-  'dynamicLayout/commander',
+  'dynamiclayout/commander',
 ], function (assert, sinon, Wreqr, commander) {
 
 

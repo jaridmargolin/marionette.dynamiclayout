@@ -7,7 +7,7 @@
 define([
   'proclaim',
   'sinon',
-  'dynamicLayout/itemView',
+  'dynamiclayout/itemView',
 ], function (assert, sinon, ItemView) {
 
 

@@ -143,7 +143,7 @@ grunt.initConfig({
         tunnelTimeout: 5,
         concurrency: 3,
         browsers: browsers,
-        testname: 'marionette.dynamicLayout'
+        testname: 'marionette.dynamiclayout'
       }
     }
   },
@@ -169,8 +169,8 @@ grunt.registerTask('build:js', ['clean:js', 'jshint', 'copy:js']);
 
 // TEST
 grunt.registerTask('test', ['test-local']);
-grunt.registerTask('test-local', ['jshint', 'mocha_phantomjs']);
-grunt.registerTask('test-sauce', ['jshint', 'connect', 'saucelabs-mocha']);
+grunt.registerTask('test-local', ['build', 'mocha_phantomjs']);
+grunt.registerTask('test-sauce', ['build', 'connect', 'saucelabs-mocha']);
 
 // DEVELOP
 grunt.registerTask('dev', ['build', 'connect', 'watch']);

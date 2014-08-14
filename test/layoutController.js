@@ -10,17 +10,18 @@ define([
   'proclaim',
   'sinon',
   'dynamiclayout/commander',
-  'dynamiclayout/tmpls/region',
   'dynamiclayout/itemView',
   'dynamiclayout/layoutView',
   'dynamiclayout/itemController',
   'dynamiclayout/layoutController'
-], function (_, Marionette, assert, sinon, commander, regionTmpl, ItemView, LayoutView, ItemController, LayoutController) {
+], function (_, Marionette, assert, sinon, commander, ItemView, LayoutView, ItemController, LayoutController) {
 
 
 // ----------------------------------------------------------------------------
 // Test
 // ----------------------------------------------------------------------------
+
+var template = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
 
 var getProps = function () {
   return _.extend({}, {
@@ -175,12 +176,12 @@ describe('layoutController.js', function () {
       assert.equal(spy.args[0][0], 'r1');
       assert.deepEqual(spy.args[0][1], {
         prefix: 'test',
-        tmpl: regionTmpl
+        tmpl: template
       });
       assert.equal(spy.args[1][0], 'r2');
       assert.deepEqual(spy.args[1][1], {
         prefix: 'test2',
-        tmpl: regionTmpl
+        tmpl: template
       });
 
       spy.restore();

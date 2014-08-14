@@ -6,11 +6,10 @@
 
 define([
   'underscore',
-  'dynamicLayout/itemController',
-  'dynamicLayout/commander',
-  'dynamicLayout/layoutView',
-  'dynamicLayout/tmpls/region'
-], function (_, itemController, commander, LayoutView, regionTmpl) {
+  'dynamiclayout/itemController',
+  'dynamiclayout/commander',
+  'dynamiclayout/layoutView'
+], function (_, itemController, commander, LayoutView) {
 
 
 // ----------------------------------------------------------------------------
@@ -68,11 +67,12 @@ return itemController.extend({
   //
   addRegion: function (name, definition) {
     var namespace = this.namespace + ':' + name;
+    var tmpl = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
 
     // Mixin with defaults
     definition = _.extend({
       prefix: this.prefix,
-      tmpl: regionTmpl
+      tmpl: tmpl
     }, definition);
 
     // Add a new region to our view

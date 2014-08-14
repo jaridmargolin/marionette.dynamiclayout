@@ -5,10 +5,10 @@
  */
 
 define([
-  'dynamicLayout/commander',
-  'dynamicLayout/itemController',
-  'dynamicLayout/layoutController',
-  'dynamicLayout/layoutView'
+  'dynamiclayout/commander',
+  'dynamiclayout/itemController',
+  'dynamiclayout/layoutController',
+  'dynamiclayout/layoutView'
 ],function (commander, ItemController, LayoutController, LayoutView) {
 
 

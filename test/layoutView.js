@@ -7,9 +7,8 @@
 define([
   'proclaim',
   'sinon',
-  'dynamiclayout/layoutView',
-  'dynamiclayout/tmpls/region'
-], function (assert, sinon, LayoutView, tmpl) {
+  'dynamiclayout/layoutView'
+], function (assert, sinon, LayoutView) {
 
 
 // ----------------------------------------------------------------------------
@@ -19,12 +18,14 @@ define([
 var expected1 = '<div class="prefix-r1 classes"></div>',
     expected2 = '<div class="prefix-r2 "></div>';
 
+var template = '<div class="<%= prefix %>-<%= name %> <%= cls %>"></div>';
+
 //
 // Little helper to add a single regions
 //
 var addSingle = function (view) {
   view.addRegion('r1', {
-    tmpl: tmpl,
+    tmpl: template,
     prefix: 'prefix',
     cls: 'classes' 
   });
@@ -36,12 +37,12 @@ var addSingle = function (view) {
 var addMultiple = function (view) {
   view.addRegions({
     'r1': {
-      tmpl: tmpl,
+      tmpl: template,
       prefix: 'prefix',
       cls: 'classes' 
     }, 
     'r2': {
-      tmpl: tmpl,
+      tmpl: template,
       prefix: 'prefix'
     }
   });

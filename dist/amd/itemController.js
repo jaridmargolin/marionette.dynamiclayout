@@ -6,7 +6,7 @@
 
 define([
   'marionette',
-  'dynamicLayout/itemView'
+  'dynamiclayout/itemView'
 ],function (Marionette, ItemView) {
 
 

@@ -67,7 +67,13 @@ return Marionette.LayoutView.extend({
     // Can template a javascript function
     delete props.tmpl;
 
-    // Create our el region
+    // Template will fail if props are missing
+    _.defaults(props, {
+      prefix: '',
+      name: '',
+      cls: ''
+    });
+
     var $region = $(_.template(tmpl, props));
 
     // Append templateted html

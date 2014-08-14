@@ -67,12 +67,12 @@ return itemController.extend({
   //
   addRegion: function (name, definition) {
     var namespace = this.namespace + ':' + name;
-    var template = '<div class="<%= prefix %>-<%= name %> <%= cls %>"></div>';
+    var tmpl = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
 
     // Mixin with defaults
     definition = _.extend({
       prefix: this.prefix,
-      tmpl: template
+      tmpl: tmpl
     }, definition);
 
     // Add a new region to our view

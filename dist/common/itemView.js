@@ -4,17 +4,15 @@
  * Copyright (c) 2014
  */
 
-define([
-  'underscore',
-  'backbone.marionette'
-],function (_,  Marionette) {
+var _ = require('underscore');
+var Marionette = require('backbone.marionette');
 
 
 /* -----------------------------------------------------------------------------
  * ItemView
  * ---------------------------------------------------------------------------*/
 
-return Marionette.ItemView.extend({
+module.exports = Marionette.ItemView.extend({
 
   // Layouts have no immediate template
   template: false
@@ -22,4 +20,4 @@ return Marionette.ItemView.extend({
 });
 
 
-});
+

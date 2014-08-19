@@ -4,16 +4,13 @@
  * Copyright (c) 2014
  */
 
-define([
-  'backbone.wreqr',
-],function (Wreqr) {
+var Wreqr = require('backbone.wreqr');
 
 
 /* -----------------------------------------------------------------------------
  * commander
  * ---------------------------------------------------------------------------*/
 
-return new Wreqr.Commands();
+module.exports = new Wreqr.Commands();
 
 
-});

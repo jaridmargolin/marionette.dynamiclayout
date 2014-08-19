@@ -5,24 +5,31 @@
  */
 
 define([
-  'marionette',
-  'dynamiclayout/itemView'
+  'backbone.marionette',
+  './itemView'
 ],function (Marionette, ItemView) {
 
 
-// ----------------------------------------------------------------------------
-// ItemController
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * ItemController
+ * ---------------------------------------------------------------------------*/
 
 return Marionette.Controller.extend({
 
   // Default LayoutVIew
   View: ItemView,
 
-  //
-  // View Controllers need a View...
-  // crazy right?
-  //
+  /**
+   * Base itemController. Sets up Controller View.
+   *
+   * @example
+   * var controller = new ItemController({
+   *   View: ItemView
+   * });
+   *
+   * @constructor
+   * @public
+   */
   constructor: function (options) {
     // Setup our itemController
     this.setup(options);
@@ -33,12 +40,15 @@ return Marionette.Controller.extend({
     }
   },
 
-  //
-  // Breaking setup out so it can be called
-  // by any controllers that want to use this
-  // as a super. Otherwise initialize will be
-  // called
-  //
+
+  /**
+   * Breaking setup out so it can be called
+   * by any controllers that want to use this
+   * as a super. Otherwise initialize will be
+   * called
+   *
+   * @private
+   */
   setup: function (options) {
     // Set options instance options
     this.options = options || {};
@@ -51,23 +61,33 @@ return Marionette.Controller.extend({
     this.view.render();
   },
 
-  //
-  // Make sure prop is defined on our instance or
-  // in our instance options object.
-  //
+
+  /**
+   * Make sure prop is defined on our instance or
+   * in our instance options object.
+   *
+   * @private
+   *
+   * @param {string} name - Name of property we are checking
+   *   existance of.
+   */
   required: function (name) {
     var val = this.getOption(name);
 
-    if (val) {
-      return val;
+    if (!val) {
+      throw new Error('Requires "' + name + '" to be defined.');
     }
 
-    throw new Error('Requires "' + name + '" to be defined.');
+    return val;
   },
 
-  //
-  // Convenience wrapper around Marionette.getOption
-  //
+
+  /**
+   * Convencience wrapper around Marionette.getOption so
+   * that it does not need to be required in each sub class.
+   *
+   * @private
+   */
   getOption: function (name) {
     return Marionette.getOption(this, name);
   }

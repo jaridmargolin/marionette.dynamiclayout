@@ -4,17 +4,15 @@
  * Copyright (c) 2014
  */
 
-define([
-  'backbone.marionette',
-  './itemView'
-],function (Marionette, ItemView) {
+var Marionette = require('backbone.marionette');
+var ItemView = require('./itemView');
 
 
 /* -----------------------------------------------------------------------------
  * ItemController
  * ---------------------------------------------------------------------------*/
 
-return Marionette.Controller.extend({
+module.exports = Marionette.Controller.extend({
 
   // Default LayoutVIew
   View: ItemView,
@@ -95,4 +93,3 @@ return Marionette.Controller.extend({
 });
 
 
-});

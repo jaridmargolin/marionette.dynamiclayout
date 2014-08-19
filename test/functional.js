@@ -5,22 +5,23 @@
  */
 
 define([
+  'underscore',
   'jquery',
   'proclaim',
   'sinon',
   'backbone',
-  'marionette',
-  'dynamiclayout/commander',
-  'dynamiclayout/layoutView',
-  'dynamiclayout/itemView',
-  'dynamiclayout/layoutController',
-  'dynamiclayout/itemController',
-], function ($, assert, sinon, Backbone, Marionette, commander, LayoutView, ItemView, LayoutController, ItemController) {
+  'backbone.marionette',
+  'commander',
+  'layoutView',
+  'itemView',
+  'layoutController',
+  'itemController',
+], function (_, $, assert, sinon, Backbone, Marionette, commander, LayoutView, ItemView, LayoutController, ItemController) {
 
 
-// ----------------------------------------------------------------------------
-// Test
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * reusable
+ * ---------------------------------------------------------------------------*/
 
 var AppView = LayoutView.extend({
   el: '#workboard'
@@ -34,11 +35,11 @@ var MyLayoutController = LayoutController.extend({
 });
 
 var R1View = Marionette.ItemView.extend({
-  template: '#tmpl-r1'
+  template: _.template('<h1><%= name %></h1>')
 });
 
 var R2View = Marionette.ItemView.extend({
-  template: '#tmpl-r2'
+  template: _.template('<h2><%= name %></h2>')
 });
 
 var R1Controller = ItemController.extend({
@@ -58,9 +59,9 @@ var r2ViewOptions = {
 };
 
 
-// ----------------------------------------------------------------------------
-// Test
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * test
+ * ---------------------------------------------------------------------------*/
 
 describe('functional', function () {
 

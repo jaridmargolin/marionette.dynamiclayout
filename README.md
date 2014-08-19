@@ -3,6 +3,7 @@ marionette.dynamiclayout [![Build Status](https://travis-ci.org/jaridmargolin/ma
 
 Manage layouts and views via controllers.
 
+
 ```js
 var AppController = new LayoutController({
 
@@ -51,7 +52,6 @@ commander.execute('app:sidebar:show', 'secondary', {
 ```
 
 
----
 
 ## TESTS
 
@@ -64,12 +64,10 @@ npm install
 **Run/View**
 
 ```
-grunt test
+npm test
 ```
 
 
-
----
 
 ## License
 

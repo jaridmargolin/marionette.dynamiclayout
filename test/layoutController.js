@@ -6,20 +6,20 @@
 
 define([
   'underscore',
-  'marionette',
+  'backbone.marionette',
   'proclaim',
   'sinon',
-  'dynamiclayout/commander',
-  'dynamiclayout/itemView',
-  'dynamiclayout/layoutView',
-  'dynamiclayout/itemController',
-  'dynamiclayout/layoutController'
+  'commander',
+  'itemView',
+  'layoutView',
+  'itemController',
+  'layoutController'
 ], function (_, Marionette, assert, sinon, commander, ItemView, LayoutView, ItemController, LayoutController) {
 
 
-// ----------------------------------------------------------------------------
-// Test
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * reusable
+ * ---------------------------------------------------------------------------*/
 
 var template = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
 
@@ -39,11 +39,16 @@ var regionsObj = {
   }
 };
 
-// ----------------------------------------------------------------------------
-// Test
-// ----------------------------------------------------------------------------
+
+/* -----------------------------------------------------------------------------
+ * test
+ * ---------------------------------------------------------------------------*/
 
 describe('layoutController.js', function () {
+
+  /* ---------------------------------------------------------------------------
+   * constructor
+   * -------------------------------------------------------------------------*/
 
   describe('constructor', function () {
 
@@ -110,6 +115,11 @@ describe('layoutController.js', function () {
 
   });
 
+
+  /* -----------------------------------------------------------------------------
+   * configureRegions
+   * ---------------------------------------------------------------------------*/
+
   describe('configureRegions', function () {
 
     it('Should call addRegion for each region.', function () {
@@ -161,6 +171,11 @@ describe('layoutController.js', function () {
     });
 
   });
+
+
+  /* -----------------------------------------------------------------------------
+   * addRegion
+   * ---------------------------------------------------------------------------*/
 
   describe('addRegion', function () {
 
@@ -250,6 +265,11 @@ describe('layoutController.js', function () {
     });
 
   });
+
+
+  /* -----------------------------------------------------------------------------
+   * showInRegion
+   * ---------------------------------------------------------------------------*/
 
   describe('showInRegion', function () {
 
@@ -363,6 +383,11 @@ describe('layoutController.js', function () {
     });
 
   });
+
+
+  /* -----------------------------------------------------------------------------
+   * setCurrentInRegion
+   * ---------------------------------------------------------------------------*/
 
   describe('setCurrentInRegion', function () {
 

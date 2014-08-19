@@ -7,22 +7,20 @@
 define([
   'proclaim',
   'sinon',
-  'dynamiclayout/layoutView'
+  'layoutView'
 ], function (assert, sinon, LayoutView) {
 
 
-// ----------------------------------------------------------------------------
-// Reusable
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * reusable
+ * ---------------------------------------------------------------------------*/
 
 var expected1 = '<div class="prefix-r1 classes"></div>',
     expected2 = '<div class="prefix-r2 "></div>';
 
 var template = '<div class="<%= prefix %>-<%= name %> <%= cls %>"></div>';
 
-//
 // Little helper to add a single regions
-//
 var addSingle = function (view) {
   view.addRegion('r1', {
     tmpl: template,
@@ -31,9 +29,7 @@ var addSingle = function (view) {
   });
 };
 
-//
 // Little helper to add multiple regions
-//
 var addMultiple = function (view) {
   view.addRegions({
     'r1': {
@@ -49,9 +45,9 @@ var addMultiple = function (view) {
 };
 
 
-// ----------------------------------------------------------------------------
-// Test
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * test
+ * ---------------------------------------------------------------------------*/
 
 describe('layoutView.js', function () {
 
@@ -59,6 +55,11 @@ describe('layoutView.js', function () {
     var view = new LayoutView();
     view.render();
   });
+
+
+  /* ---------------------------------------------------------------------------
+   * addRegion
+   * -------------------------------------------------------------------------*/
 
   describe('addRegion', function () {
 
@@ -72,7 +73,12 @@ describe('layoutView.js', function () {
     });
 
   });
-  
+
+
+  /* ---------------------------------------------------------------------------
+   * addRegions
+   * -------------------------------------------------------------------------*/
+
   describe('addRegions', function () {
 
     it('Should append templated regions to el.', function () {
@@ -85,6 +91,11 @@ describe('layoutView.js', function () {
     });
 
   });
+
+
+  /* ---------------------------------------------------------------------------
+   * removeRegions
+   * -------------------------------------------------------------------------*/
 
   describe('removeRegions', function () {
 

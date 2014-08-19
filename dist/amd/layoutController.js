@@ -6,24 +6,31 @@
 
 define([
   'underscore',
-  'dynamiclayout/itemController',
-  'dynamiclayout/commander',
-  'dynamiclayout/layoutView'
+  './itemController',
+  './commander',
+  './layoutView'
 ], function (_, itemController, commander, LayoutView) {
 
 
-// ----------------------------------------------------------------------------
-// Layout Controller
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * LayoutController
+ * ---------------------------------------------------------------------------*/
 
 return itemController.extend({
 
   // Default LayoutVIew
   View: LayoutView,
 
-  //
-  // Setup main application controller.
-  //
+  /**
+   * Controller with methods to manipulate nested layout
+   * views and associated regions.
+   *
+   * @example
+   * var controller = new LayoutController();
+   *
+   * @constructor
+   * @public
+   */
   constructor: function (options) {
     // Layout Controller uses itemController
     // as a base.
@@ -46,10 +53,13 @@ return itemController.extend({
     }
   },
 
-  //
-  // Create any regions declared in layoutRegions.
-  // *declared in class or passed in this.options
-  //
+
+  /**
+   * Create any regions declared in layoutRegions.
+   * Declared in class or passed in this.options
+   *
+   * @private
+   */
   configureRegions: function () {
     var regions = this.getOption('regions'),
         isArr   = _.isArray(regions);
@@ -61,10 +71,19 @@ return itemController.extend({
     }, this);
   },
 
-  //
-  // Add regions to our app view and set up global events on commander
-  // to interact with them.
-  //
+
+  /**
+   * Add regions to our app view and set up global events on commander
+   * to interact with them.
+   *
+   * @example
+   * controller.addRegion('r1', { tmpl: template });
+   *
+   * @public
+   *
+   * @param {string} name - Name of the region to add.
+   * @param {object} definition - Region definition.
+   */
   addRegion: function (name, definition) {
     var namespace = this.namespace + ':' + name;
     var tmpl = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
@@ -101,10 +120,23 @@ return itemController.extend({
     };
   },
 
-  //
-  // Show a view in the specified region using the controller
-  // that instantiates the view.
-  //
+
+  /**
+   * Show a view in the specified region using the controller
+   * that instantiates the view.
+   *
+   * @example
+   * controller.showInRegion('r1', { 
+   *   name: 'content',
+   *   Controller: ContentController
+   * }, completed);
+   *
+   * @public
+   *
+   * @param {string} name - Name of the region to show content in.
+   * @param {object} item - Item definition.
+   * @param {function} done - Callback executed once view is shown.
+   */
   showInRegion: function (name, item, done) {
     var region = this._regions[name],
         isDiff = region.current.name !== item.name;
@@ -130,9 +162,15 @@ return itemController.extend({
     } 
   },
 
-  //
-  // Set current of specified region.
-  //
+
+  /**
+   * Set current of specified region.
+   *
+   * @private
+   *
+   * @param {string} name - Region currently manipulating on.
+   * @param {object} item - Item to initialize and set as current.
+   */
   setCurrentInRegion: function (region, item) {
     var name = item.name;
 
@@ -142,7 +180,10 @@ return itemController.extend({
     }, item.options));
 
     // Set new cur - initialize app controller
-    region.current = { name: name, controller: controller };
+    region.current = {
+      name: name,
+      controller: controller
+    };
   }
 
 });

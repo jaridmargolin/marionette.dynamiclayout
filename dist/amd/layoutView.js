@@ -1,27 +1,45 @@
 /*!
- * views/layout.js
+ * layoutView.js
  * 
  * Copyright (c) 2014
  */
 
 define([
   'underscore',
-  'marionette'
+  'backbone.marionette'
 ],function (_,  Marionette) {
 
 
-// ----------------------------------------------------------------------------
-// Page View
-// ----------------------------------------------------------------------------
+/* -----------------------------------------------------------------------------
+ * LayoutView
+ * ---------------------------------------------------------------------------*/
 
+/**
+ * LayoutView that dynamically creates and appends regions.
+ *
+ * @example
+ * var view = new LayoutView();
+ *
+ * @constructor
+ * @public
+ */
 return Marionette.LayoutView.extend({
 
   // Layouts have no immediate template
   template: false,
 
-  //
-  // Template and attach a new app-holder to the DOM
-  //
+  /**
+   * Add regions to the view by templating and attaching
+   * a new region holder to the DOM.
+   *
+   * @example
+   * view.addRegion('r1', { prefix: 'r1' });
+   *
+   * @public
+   *
+   * @param {string} name - Name of the region to add.
+   * @param {object} definition - Region definition.
+   */
   addRegion: function(name, definition) {
     // Append regions prior to assigning them
     var formatted = {
@@ -31,9 +49,21 @@ return Marionette.LayoutView.extend({
     Marionette.LayoutView.prototype.addRegion.call(this, name, formatted);
   },
 
-  //
-  // Template and attach a new app-holder to the DOM
-  //
+
+  /**
+   * Add multiple regions at one.
+   *
+   * @example
+   * view.addRegions({
+   *   'r1': { prefix: 'r1' },
+   *   'r2': { prefix: 'r2' }
+   * });
+   *
+   * @public
+   *
+   * @param {regions} name - Regions object where the key represents
+   *   the region name and the value is the region definition.
+   */
   addRegions: function(regions) {
     var formatted = {};
 
@@ -47,9 +77,17 @@ return Marionette.LayoutView.extend({
     Marionette.LayoutView.prototype.addRegions.call(this, formatted);
   },
 
-  //
-  // Remove template from 
-  //
+
+  /**
+   * Remove both region and holder el.
+   *
+   * @example
+   * view.removeRegion('r1');
+   *
+   * @public
+   *
+   * @param {string} name - Name of the region to remove.
+   */
   removeRegion: function(name) {
     // Remove $region element
     this.$regions[name].remove();
@@ -57,9 +95,15 @@ return Marionette.LayoutView.extend({
     Marionette.LayoutView.prototype.removeRegion.apply(this, arguments);
   },
 
-  //
-  // Append app region template to dom.
-  //
+
+  /**
+   * Append app region template to DOM.
+   *
+   * @private
+   *
+   * @param {string} name - Name of the region to add.
+   * @param {object} definition - Region definition.
+   */
   appendRegion: function (name, definition) {
     var tmpl  = definition.tmpl,
         props = _.extend({ name: name }, definition);

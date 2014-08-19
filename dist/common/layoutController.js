@@ -4,19 +4,17 @@
  * Copyright (c) 2014
  */
 
-define([
-  'underscore',
-  './itemController',
-  './commander',
-  './layoutView'
-], function (_, itemController, commander, LayoutView) {
+var _ = require('underscore');
+var itemController = require('./itemController');
+var commander = require('./commander');
+var LayoutView = require('./layoutView');
 
 
 /* -----------------------------------------------------------------------------
  * LayoutController
  * ---------------------------------------------------------------------------*/
 
-return itemController.extend({
+module.exports = itemController.extend({
 
   // Default LayoutVIew
   View: LayoutView,
@@ -189,4 +187,3 @@ return itemController.extend({
 });
 
 
-});

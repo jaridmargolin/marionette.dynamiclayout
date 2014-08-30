@@ -57,7 +57,7 @@ return Marionette.Controller.extend({
     this.View = this.required('View');
 
     // Render yo!
-    this.view = new this.View(this.options.viewOptions || {});
+    this.view = new this.View(this.getOption('viewOptions') || {});
     this.view.render();
   },
 

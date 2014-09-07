@@ -12963,7 +12963,6 @@ itemController = function (Marionette, ItemView) {
       this.View = this.required('View');
       // Render yo!
       this.view = new this.View(this.getOption('viewOptions') || {});
-      this.view.render();
     },
     /**
      * Make sure prop is defined on our instance or

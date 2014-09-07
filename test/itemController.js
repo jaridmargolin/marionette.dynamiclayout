@@ -49,14 +49,10 @@ describe('itemController.js', function () {
     assert.equal(myController2.View, MyItemView);
   });
 
-  it('Should add view to instance and render.', function () {
-    var spy = sinon.spy(Marionette.ItemView.prototype, 'render');
+  it('Should add view to instance.', function () {
     var myController = new ItemController();
 
     assert.isInstanceOf(myController.view, ItemView);
-    assert.ok(spy.calledOnce);
-
-    spy.restore();
   });
 
   it('Should call initialize if set on prototype.', function () {

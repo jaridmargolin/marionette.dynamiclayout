@@ -56,7 +56,6 @@ module.exports = Marionette.Controller.extend({
 
     // Render yo!
     this.view = new this.View(this.getOption('viewOptions') || {});
-    this.view.render();
   },
 
 

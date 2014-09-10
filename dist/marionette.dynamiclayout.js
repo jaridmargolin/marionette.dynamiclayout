@@ -13268,7 +13268,7 @@ layoutController = function (_, itemController, commander, LayoutView) {
       }
       // Optional callback that passes current region object.
       if (done) {
-        done(current);
+        done(region.current);
       }
     },
     /**

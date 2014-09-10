@@ -206,7 +206,7 @@ module.exports = itemController.extend({
 
     // Optional callback that passes current region object.
     if (done) {
-      done(current);
+      done(region.current);
     } 
   },
 

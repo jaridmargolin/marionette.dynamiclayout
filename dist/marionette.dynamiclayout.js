@@ -13100,6 +13100,10 @@ layoutView = function (_, Marionette) {
  */
 layoutController = function (_, itemController, commander, LayoutView) {
   /* -----------------------------------------------------------------------------
+   * scope
+   * ---------------------------------------------------------------------------*/
+  var tmpl = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
+  /* -----------------------------------------------------------------------------
    * LayoutController
    * ---------------------------------------------------------------------------*/
   return itemController.extend({
@@ -13122,9 +13126,15 @@ layoutController = function (_, itemController, commander, LayoutView) {
       // Set required instance variables
       this.prefix = this.required('prefix');
       this.namespace = this.required('namespace');
-      // Set up and empty object responsible for managing
+      // Set up an empty array to hold reference to all
+      // applied events (for cleanup).
+      this._events = [];
+      // Set up an empty object responsible for managing
       // view regions and current state. 
       this._regions = {};
+      // Set up an empty object responsible for manging
+      // sub controllers.
+      this._items = {};
       // Setup any regions set
       this.configureRegions();
       // Initliaze yo!
@@ -13157,33 +13167,54 @@ layoutController = function (_, itemController, commander, LayoutView) {
      * @param {object} definition - Region definition.
      */
     addRegion: function (name, definition) {
-      var namespace = this.namespace + ':' + name;
-      var tmpl = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
+      var namespace = [
+          this.namespace,
+          name
+        ].join(':');
+      var eventName = [
+          namespace,
+          'show'
+        ].join(':');
       // Mixin with defaults
-      definition = _.extend({
-        prefix: this.prefix,
-        tmpl: tmpl
-      }, definition);
+      definition = _.extend({}, definition);
+      definition['prefix'] = definition['prefix'] || this.prefix;
+      definition['tmpl'] = definition['tmpl'] || tmpl;
       // Add a new region to our view
       this.view.addRegion(name, definition);
-      // Add an event to show a specified controller view
-      // in the region.
-      commander.setHandler(namespace + ':show', function (itemName, item, done) {
-        var formatted = { name: itemName };
-        // item passed as Controller
-        if (_.isFunction(item)) {
-          item = { Controller: item };
-        }
-        // Mix name into formatted item
-        this.showInRegion(name, _.extend(formatted, item), done);
-      }, this);
       // We want to always have track of our crruent region controller.
       // Setting to empty ovject to avoid having to check for existence
       // everywhere we lookup
-      this._regions[name] = {
-        namespace: namespace,
-        current: {}
-      };
+      var region = this._regions[name] = {};
+      region['namespace'] = namespace;
+      region['current'] = {};
+      // Add an event to show a specified controller view
+      // in the region. Handler should be passed region name.
+      this._events.push(eventName);
+      commander.setHandler(eventName, _.bind(this.onShow, this, name));
+    },
+    /**
+     * Show handler. Responsible for showing a view/controller
+     * in the new region.
+     *
+     * @private
+     *
+     * @params {string} regionName - Name of region to show view in.
+     * @params {string} itemName - Name of view to show in region.
+     * @params {object} item - The item contains a Controller
+     *   and any options to pass in at Controller instantiation.
+     * @params {function} done - Callback to execute once region
+     *   has been shown. Will pass in the newly instantiated
+     *   controller.
+     */
+    onShow: function (regionName, itemName, item, done) {
+      // item passed as Controller
+      if (_.isFunction(item)) {
+        item = { Controller: item };
+      }
+      // add name to item object
+      item['name'] = itemName;
+      // Mix name into formatted item
+      this.showInRegion(regionName, item, done);
     },
     /**
      * Show a view in the specified region using the controller
@@ -13201,23 +13232,32 @@ layoutController = function (_, itemController, commander, LayoutView) {
      * @param {object} item - Item definition.
      * @param {function} done - Callback executed once view is shown.
      */
-    showInRegion: function (name, item, done) {
-      var region = this._regions[name], isDiff = region.current.name !== item.name;
+    showInRegion: function (regionName, item, done) {
+      var region = this._regions[regionName];
+      var current = region.current;
+      var isDiff = current.name !== item.name;
+      var name = [
+          regionName,
+          item.name
+        ].join(':');
       // If it currently exists and is differnt
-      // then we need to destroy.
-      if (region.current.name && isDiff && !item.preventClose) {
-        region.current.controller.destroy();
+      // then we need to destroy/remove.
+      if (isDiff && current.name && !item.preventClose) {
+        current.controller.destroy();
+        delete this._items[current.name];
       }
-      // New controller needs to be instantiated and displayed
-      // in our region.
+      // Create a new item if it does not yet exist.
+      if (isDiff && !this._items[name]) {
+        this._items[name] = this.createItem(region, item);
+      }
+      // Show and set current.
       if (isDiff) {
-        this.setCurrentInRegion(region, item);
-        // Display controller view in 
-        this.view[name].show(region.current.controller.view);
+        region.current = this._items[name];
+        this.view[regionName].show(region.current.controller.view);
       }
       // Optional callback that passes current region object.
       if (done) {
-        done(region.current);
+        done(current);
       }
     },
     /**
@@ -13228,14 +13268,18 @@ layoutController = function (_, itemController, commander, LayoutView) {
      * @param {string} name - Region currently manipulating on.
      * @param {object} item - Item to initialize and set as current.
      */
-    setCurrentInRegion: function (region, item) {
-      var name = item.name;
-      // Set controller to new instance
-      var controller = new item.Controller(_.extend({ namespace: region.namespace + ':' + name }, item.options));
-      // Set new cur - initialize app controller
-      region.current = {
-        name: name,
-        controller: controller
+    createItem: function (region, item) {
+      var options = _.extend({}, item.options);
+      var namespace = [
+          region.namespace,
+          item.name
+        ].join(':');
+      // Add namespace to options
+      options['namespace'] = namespace;
+      // Add item
+      return {
+        'controller': new item.Controller(options),
+        'name': item.name
       };
     }
   });

@@ -215,7 +215,7 @@ describe('layoutController.js', function () {
   describe('showInRegion', function () {
 
     beforeEach(function () {
-      this.setSpy = sinon.spy(LayoutController.prototype, 'setCurrentInRegion');
+      this.createSpy = sinon.spy(LayoutController.prototype, 'createItem');
       this.showSpy = sinon.spy(Marionette.Region.prototype, 'show');
       this.destroySpy = sinon.spy(Marionette.Controller.prototype, 'destroy');
 
@@ -224,16 +224,16 @@ describe('layoutController.js', function () {
     });
 
     afterEach(function () {
-      this.setSpy.restore();
+      this.createSpy.restore();
       this.showSpy.restore();
       this.destroySpy.restore();
     });
 
-    it('Should call setCurrentInRegion.', function () {
+    it('Should call createItem.', function () {
       this.myLayoutController.showInRegion('r1', this.item1);
 
-      assert.equal(this.setSpy.args[0][0], this.myLayoutController._regions['r1']);
-      assert.equal(this.setSpy.args[0][1], this.item1);
+      assert.equal(this.createSpy.args[0][0], this.myLayoutController._regions['r1']);
+      assert.equal(this.createSpy.args[0][1], this.item1);
     });
 
     it('Should call view.show.', function () {
@@ -247,7 +247,7 @@ describe('layoutController.js', function () {
       this.myLayoutController.showInRegion('r1', this.item1);
 
       assert.ok(this.showSpy.calledOnce);
-      assert.ok(this.setSpy.calledOnce);
+      assert.ok(this.createSpy.calledOnce);
     });
 
     it('Should call close on current controller if exists.', function () {
@@ -268,24 +268,24 @@ describe('layoutController.js', function () {
 
 
   /* -----------------------------------------------------------------------------
-   * setCurrentInRegion
+   * createItem
    * ---------------------------------------------------------------------------*/
 
-  describe('setCurrentInRegion', function () {
+  describe('createItem', function () {
 
     beforeEach(function () {
+      this.props.regions = this.regionsObj;
+
       this.MyLayoutController = LayoutController.extend(this.propsObj);
       this.myLayoutController = new this.MyLayoutController();
-
-      this.region = this.myLayoutController._regions['r1'];
     });
 
-    it('Should set region.current with name and controller properties.', function () {
-      this.myLayoutController.setCurrentInRegion(this.region, this.item1);
+    it('Should return item name and controller properties.', function () {
+      var region = this.myLayoutController._regions['r1'];
+      var item = this.myLayoutController.createItem(region, this.item1);
 
-      var current = this.myLayoutController._regions['r1'].current;
-      assert.equal(current.name, 'item1');
-      assert.ok(current.controller instanceof ItemController);
+      assert.equal(item.name, this.item1.name);
+      assert.ok(item.controller instanceof ItemController);
     });
 
   });

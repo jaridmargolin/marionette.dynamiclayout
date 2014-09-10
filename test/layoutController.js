@@ -18,33 +18,25 @@ define([
 
 
 /* -----------------------------------------------------------------------------
- * reusable
- * ---------------------------------------------------------------------------*/
-
-var template = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
-
-var getProps = function () {
-  return _.extend({}, {
-    prefix: 'test',
-    namespace: 'main'
-  });
-};
-
-var regionsArr = ['r1', 'r2'];
-
-var regionsObj = {
-  'r1': {},
-  'r2': {
-    prefix: 'test2'
-  }
-};
-
-
-/* -----------------------------------------------------------------------------
  * test
  * ---------------------------------------------------------------------------*/
 
 describe('layoutController.js', function () {
+
+  beforeEach(function () {
+    var regionsArr = ['r1', 'r2'];
+    var regionsObj = { 'r1': {}, 'r2': { prefix: 'test2' } };
+
+    this.template = '<div class="<%=prefix%>-<%=name%> <%=cls%>"></div>';
+
+    this.props    = { prefix: 'test', namespace: 'main' };
+    this.propsArr = { prefix: 'test', namespace: 'main', regions: regionsArr };
+    this.propsObj = { prefix: 'test', namespace: 'main', regions: regionsObj };
+    
+    this.item1 = { name: 'item1', Controller: ItemController };
+    this.item2 = { name: 'item2', Controller: ItemController };
+  });
+
 
   /* ---------------------------------------------------------------------------
    * constructor
@@ -52,65 +44,62 @@ describe('layoutController.js', function () {
 
   describe('constructor', function () {
 
+    beforeEach(function () {
+      this.setupSpy  = sinon.spy(ItemController.prototype, 'setup');
+      this.configSpy = sinon.spy(LayoutController.prototype, 'configureRegions');
+    });
+
+    afterEach(function () {
+      this.setupSpy.restore();
+      this.configSpy.restore();
+    });
+
     it('Should call setup.', function () {
-      var spy = sinon.spy(ItemController.prototype, 'setup');
+      var MyLayoutController = LayoutController.extend(this.propsArr);
+      var myLayoutController = new MyLayoutController();
 
-      var MyLayoutController = LayoutController.extend(getProps()),
-          myLayoutController = new MyLayoutController();
-
-      assert.ok(spy.calledOnce);
-
-      spy.restore();
+      assert.ok(this.setupSpy.calledOnce);
     });
 
     it('Should fail if prefix is not provided.', function () {
-      var props = getProps();
-      delete props.prefix;
+      delete this.propsArr.prefix;
 
-      var MyLayoutController = LayoutController.extend(props);
-
-      assert.throws(function () {
+      assert.throws(_.bind(function () {
+        var MyLayoutController = LayoutController.extend(this.propsArr);
         var myLayoutController = new MyLayoutController();
-      });
+      }, this));
     });
 
     it('Should fail if namespace is not provided.', function () {
-      var props = getProps();
-      delete props.namespace;
+      delete this.propsArr.namespace;
 
-      var MyLayoutController = LayoutController.extend(props);
-
-      assert.throws(function () {
+      assert.throws(_.bind(function () {
+        var MyLayoutController = LayoutController.extend(this.propsArr);
         var myLayoutController = new MyLayoutController();
-      });
+      }, this));
     });
 
     it('Should add _regions object to instance.', function () {
-      var MyLayoutController = LayoutController.extend(getProps()),
-          myLayoutController = new MyLayoutController();
+      var MyLayoutController = LayoutController.extend(this.props);
+      var myLayoutController = new MyLayoutController();
 
       assert.deepEqual(myLayoutController._regions, {});
     });
 
     it('Should call configureRegion.', function () {
-      var spy = sinon.spy(LayoutController.prototype, 'configureRegions');
+      var MyLayoutController = LayoutController.extend(this.propsArr);
+      var myLayoutController = new MyLayoutController();
 
-      var MyLayoutController = LayoutController.extend(getProps()),
-          myLayoutController = new MyLayoutController();
-
-      assert.ok(spy.calledOnce);
-
-      spy.restore();
+      assert.ok(this.configSpy.calledOnce);
     });
 
     it('Should call initialize.', function () {
-      var props = getProps();
-      props.initialize = sinon.spy();
+      this.propsArr.initialize = sinon.spy();
 
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
+      var MyLayoutController = LayoutController.extend(this.propsArr);
+      var myLayoutController = new MyLayoutController();
 
-      assert.ok(props.initialize.calledOnce);
+      assert.ok(this.propsArr.initialize.calledOnce);
     });
 
   });
@@ -122,52 +111,39 @@ describe('layoutController.js', function () {
 
   describe('configureRegions', function () {
 
+    beforeEach(function () {
+      this.addSpy = sinon.spy(LayoutController.prototype, 'addRegion');
+    });
+
+    afterEach(function () {
+      this.addSpy.restore();
+    });
+
     it('Should call addRegion for each region.', function () {
-      var spy = sinon.spy(LayoutController.prototype, 'addRegion');
+      var MyLayoutController = LayoutController.extend(this.propsArr);
+      var myLayoutController = new MyLayoutController();
 
-      var props = getProps();
-      props.regions = regionsArr;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.ok(spy.calledTwice);
-
-      spy.restore();
+      assert.ok(this.addSpy.calledTwice);
     });
 
     it('Should call addRegion with empty definition if passed as array of strings.', function () {
-      var spy = sinon.spy(LayoutController.prototype, 'addRegion');
+      var MyLayoutController = LayoutController.extend(this.propsArr);
+      var myLayoutController = new MyLayoutController();
 
-      var props = getProps();
-      props.regions = regionsArr;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.equal(spy.args[0][0], 'r1');
-      assert.deepEqual(spy.args[0][1], {});
-      assert.equal(spy.args[1][0], 'r2');
-      assert.deepEqual(spy.args[1][1], {});
-
-      spy.restore();
+      assert.equal(this.addSpy.args[0][0], 'r1');
+      assert.deepEqual(this.addSpy.args[0][1], {});
+      assert.equal(this.addSpy.args[1][0], 'r2');
+      assert.deepEqual(this.addSpy.args[1][1], {});
     });
 
     it('Should call addRegion with definition if passed as object.', function () {
-      var spy = sinon.spy(LayoutController.prototype, 'addRegion');
+      var MyLayoutController = LayoutController.extend(this.propsObj);
+      var myLayoutController = new MyLayoutController();
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.equal(spy.args[0][0], 'r1');
-      assert.deepEqual(spy.args[0][1], {});
-      assert.equal(spy.args[1][0], 'r2');
-      assert.deepEqual(spy.args[1][1], { prefix: 'test2' });
-
-      spy.restore();
+      assert.equal(this.addSpy.args[0][0], 'r1');
+      assert.deepEqual(this.addSpy.args[0][1], {});
+      assert.equal(this.addSpy.args[1][0], 'r2');
+      assert.deepEqual(this.addSpy.args[1][1], { prefix: 'test2' });
     });
 
   });
@@ -179,89 +155,54 @@ describe('layoutController.js', function () {
 
   describe('addRegion', function () {
 
+    beforeEach(function () {
+      this.addSpy = sinon.spy(LayoutView.prototype, 'addRegion');
+      this.handlerSpy = sinon.spy(commander, 'setHandler');
+      this.showStub = sinon.stub(LayoutController.prototype, 'showInRegion');
+
+      this.MyLayoutController = LayoutController.extend(this.propsObj);
+      this.myLayoutController = new this.MyLayoutController();
+    });
+
+    afterEach(function () {
+      this.addSpy.restore();
+      this.handlerSpy.restore();
+      this.showStub.restore();
+    });
+
     it('Should call view.addRegion with passed name and formatted definition.', function () {
-      var spy = sinon.spy(LayoutView.prototype, 'addRegion');
-
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.equal(spy.args[0][0], 'r1');
-      assert.deepEqual(spy.args[0][1], {
-        prefix: 'test',
-        tmpl: template
-      });
-      assert.equal(spy.args[1][0], 'r2');
-      assert.deepEqual(spy.args[1][1], {
-        prefix: 'test2',
-        tmpl: template
-      });
-
-      spy.restore();
+      assert.equal(this.addSpy.args[0][0], 'r1');
+      assert.deepEqual(this.addSpy.args[0][1], { prefix: 'test', tmpl: this.template });
+      assert.equal(this.addSpy.args[1][0], 'r2');
+      assert.deepEqual(this.addSpy.args[1][1], { prefix: 'test2', tmpl: this.template });
     });
 
     it('Should set handler for namespace:show event.', function () {
-      var spy = sinon.spy(commander, 'setHandler');
-
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.equal(spy.args[0][0], 'main:r1:show');
-      assert.equal(spy.args[1][0], 'main:r2:show');
-
-      spy.restore();
+      assert.equal(this.handlerSpy.args[0][0], 'main:r1:show');
+      assert.equal(this.handlerSpy.args[1][0], 'main:r2:show');
     });
 
-    it('Should set call showInRegion from inside handler for namespace:show event.', function () {
-      var stub = sinon.stub(LayoutController.prototype, 'showInRegion');
-
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
+    it('Should call showInRegion from inside handler for namespace:show event.', function () {
       commander.execute('main:r1:show', 'item', ItemController);
-      commander.execute('main:r2:show', 'item', {
-        Controller: ItemController
-      });
+      commander.execute('main:r2:show', 'item', { Controller: ItemController });
 
-      assert.equal(stub.args[0][0], 'r1');
-      assert.deepEqual(stub.args[0][1], {
-        name: 'item',
-        Controller: ItemController
-      });
+      var expected1 = { name: 'item', Controller: ItemController };
+      assert.equal(this.showStub.args[0][0], 'r1');
+      assert.deepEqual(this.showStub.args[0][1], expected1);
 
-      assert.equal(stub.args[1][0], 'r2');
-      assert.deepEqual(stub.args[1][1], {
-        name: 'item',
-        Controller: ItemController
-      });
-      
-      stub.restore();
+      var expected2 = { name: 'item', Controller: ItemController };
+      assert.equal(this.showStub.args[1][0], 'r2');
+      assert.deepEqual(this.showStub.args[1][1], expected2);
     });
 
     it('Should add region to _regions store using the name as the key.', function () {
-      var props = getProps();
-      props.regions = regionsObj;
+      var r1 = this.myLayoutController._regions['r1'];
+      var expected1 = { namespace: 'main:r1', current: {} };
+      assert.deepEqual(r1, expected1);
 
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      assert.deepEqual(myLayoutController._regions['r1'], {
-        namespace: 'main:r1',
-        current: {}
-      });
-
-      assert.deepEqual(myLayoutController._regions['r2'], {
-        namespace: 'main:r2',
-        current: {}
-      });
+      var r2 = this.myLayoutController._regions['r2'];
+      var expected2 = { namespace: 'main:r2', current: {} };
+      assert.deepEqual(r2, expected2);
     });
 
   });
@@ -273,113 +214,54 @@ describe('layoutController.js', function () {
 
   describe('showInRegion', function () {
 
+    beforeEach(function () {
+      this.setSpy = sinon.spy(LayoutController.prototype, 'setCurrentInRegion');
+      this.showSpy = sinon.spy(Marionette.Region.prototype, 'show');
+      this.destroySpy = sinon.spy(Marionette.Controller.prototype, 'destroy');
+
+      this.MyLayoutController = LayoutController.extend(this.propsObj);
+      this.myLayoutController = new this.MyLayoutController();
+    });
+
+    afterEach(function () {
+      this.setSpy.restore();
+      this.showSpy.restore();
+      this.destroySpy.restore();
+    });
+
     it('Should call setCurrentInRegion.', function () {
-      var spy = sinon.spy(LayoutController.prototype, 'setCurrentInRegion');
+      this.myLayoutController.showInRegion('r1', this.item1);
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      var item = {
-        name: 'item',
-        Controller: ItemController
-      };
-
-      myLayoutController.showInRegion('r1', item);
-
-      assert.equal(spy.args[0][0], myLayoutController._regions['r1']);
-      assert.equal(spy.args[0][1], item);
-
-      spy.restore();
+      assert.equal(this.setSpy.args[0][0], this.myLayoutController._regions['r1']);
+      assert.equal(this.setSpy.args[0][1], this.item1);
     });
 
     it('Should call view.show.', function () {
-      var spy = sinon.spy(Marionette.Region.prototype, 'show');
+      this.myLayoutController.showInRegion('r1', this.item1);
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item',
-        Controller: ItemController
-      });
-
-      assert.ok(spy.args[0][0] instanceof ItemView);
-
-      spy.restore();
+      assert.ok(this.showSpy.args[0][0] instanceof ItemView);
     });
 
     it('Should not call showInRegion or view.show if region already shown.', function () {
-      var spy1 = sinon.spy(Marionette.Region.prototype, 'show'),
-          spy2 = sinon.spy(LayoutController.prototype, 'setCurrentInRegion');
+      this.myLayoutController.showInRegion('r1', this.item1);
+      this.myLayoutController.showInRegion('r1', this.item1);
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item',
-        Controller: ItemController
-      });
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item',
-        Controller: ItemController
-      });
-
-      assert.ok(spy1.calledOnce);
-      assert.ok(spy2.calledOnce);
-
-      spy1.restore();
-      spy2.restore();
+      assert.ok(this.showSpy.calledOnce);
+      assert.ok(this.setSpy.calledOnce);
     });
 
     it('Should call close on current controller if exists.', function () {
-      var spy = sinon.spy(Marionette.Controller.prototype, 'destroy');
+      this.myLayoutController.showInRegion('r1', this.item1);
+      this.myLayoutController.showInRegion('r1', this.item2);
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item1',
-        Controller: ItemController
-      });
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item2',
-        Controller: ItemController
-      });
-
-      assert.ok(spy.calledOnce);
-
-      spy.restore();
+      assert.ok(this.destroySpy.calledOnce);
     });
 
     it('Should call callback if passed.', function () {
-      var spy = sinon.spy();
+      var stub = sinon.stub();
+      this.myLayoutController.showInRegion('r1', this.item1, stub);
 
-      var props = getProps();
-      props.regions = regionsObj;
-
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      myLayoutController.showInRegion('r1', {
-        name: 'item1',
-        Controller: ItemController
-      }, spy);
-
-      assert.ok(spy.calledOnce);
+      assert.ok(stub.calledOnce);
     });
 
   });
@@ -391,38 +273,19 @@ describe('layoutController.js', function () {
 
   describe('setCurrentInRegion', function () {
 
-    it('Should set region.current.name with controller.name.', function () {
-      var props = getProps();
-      props.regions = regionsObj;
+    beforeEach(function () {
+      this.MyLayoutController = LayoutController.extend(this.propsObj);
+      this.myLayoutController = new this.MyLayoutController();
 
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      var region = myLayoutController._regions['r1'];
-
-      myLayoutController.setCurrentInRegion(region, {
-        name: 'item1',
-        Controller: ItemController
-      });
-
-      assert.equal(myLayoutController._regions['r1'].current.name, 'item1');
+      this.region = this.myLayoutController._regions['r1'];
     });
 
-    it('Should set region.currentcontroller with new instance of controller.Controller.', function () {
-      var props = getProps();
-      props.regions = regionsObj;
+    it('Should set region.current with name and controller properties.', function () {
+      this.myLayoutController.setCurrentInRegion(this.region, this.item1);
 
-      var MyLayoutController = LayoutController.extend(props),
-          myLayoutController = new MyLayoutController();
-
-      var region = myLayoutController._regions['r1'];
-
-      myLayoutController.setCurrentInRegion(region, {
-        name: 'item1',
-        Controller: ItemController
-      });
-
-      assert.ok(myLayoutController._regions['r1'].current.controller instanceof ItemController);
+      var current = this.myLayoutController._regions['r1'].current;
+      assert.equal(current.name, 'item1');
+      assert.ok(current.controller instanceof ItemController);
     });
 
   });

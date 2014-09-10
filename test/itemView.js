@@ -5,10 +5,11 @@
  */
 
 define([
+  'underscore',
   'proclaim',
   'sinon',
-  'itemView',
-], function (assert, sinon, ItemView) {
+  'itemView'
+], function (_, assert, sinon, ItemView) {
 
 
 /* -----------------------------------------------------------------------------
@@ -17,9 +18,14 @@ define([
 
 describe('itemView.js', function () {
 
+  beforeEach(function () {
+    this.view = new ItemView();
+  });
+
   it('Should render without defining a template.', function () {
-    var view = new ItemView();
-    view.render();
+    assert.doesNotThrow(_.bind(function () {
+      this.view.render();
+    }, this));
   });
 
 });

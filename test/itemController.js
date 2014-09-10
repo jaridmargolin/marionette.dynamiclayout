@@ -14,59 +14,39 @@ define([
 
 
 /* -----------------------------------------------------------------------------
- * reusable
- * ---------------------------------------------------------------------------*/
-
-var MyItemView = ItemView.extend({});
-
-
-/* -----------------------------------------------------------------------------
  * test
  * ---------------------------------------------------------------------------*/
 
 describe('itemController.js', function () {
 
-  it('Should add options property to instance.', function () {
-    var options = { 'key': 'value' },
-        myController1, myController2;
-    
-    myController1 = new ItemController();
-    myController2 = new ItemController(options);
+  beforeEach(function () {
+    this.initializeStub = sinon.stub();
 
-    assert.deepEqual(myController1.options, {});
-    assert.equal(myController2.options, options);
+    this.MyItemView = ItemView.extend({});
+    this.MyItemController = ItemController.extend({ 'initialize': this.initializeStub });
+
+    this.myController1 = new ItemController();
+    this.myController2 = new ItemController({ 'key': 'value' });
+    this.myController3 = new ItemController({ 'View': this.MyItemView });
+    this.myController4 = new this.MyItemController();
+  });
+
+  it('Should add options property to instance.', function () {
+    assert.deepEqual(this.myController1.options, {});
+    assert.deepEqual(this.myController2.options, { 'key': 'value' });
   });
 
   it('Should add View to instance.', function () {
-    var myController1, myController2;
-
-    myController1 = new ItemController();
-    myController2 = new ItemController({
-      View: MyItemView
-    });
-
-    assert.equal(myController1.View, ItemView);
-    assert.equal(myController2.View, MyItemView);
+    assert.equal(this.myController1.View, ItemView);
+    assert.equal(this.myController3.View, this.MyItemView);
   });
 
   it('Should add view to instance.', function () {
-    var myController = new ItemController();
-
-    assert.isInstanceOf(myController.view, ItemView);
+    assert.isInstanceOf(this.myController1.view, ItemView);
   });
 
   it('Should call initialize if set on prototype.', function () {
-    var MyController = ItemController.extend({
-      initialize: function () {}
-    });
-
-    var spy = sinon.spy(MyController.prototype, 'initialize');
-    var myController = new MyController();
-
-    assert.ok(spy.calledOnce);
-
-    spy.restore();
-
+    assert.ok(this.initializeStub.calledOnce);
   });
 
 });

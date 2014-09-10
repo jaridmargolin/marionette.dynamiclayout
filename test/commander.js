@@ -1,5 +1,5 @@
 /*!
- * test/.js
+ * test/commander.js
  * 
  * Copyright (c) 2014
  */

@@ -13143,6 +13143,17 @@ layoutController = function (_, itemController, commander, LayoutView) {
       }
     },
     /**
+     * Called on controller destroy. Used to clean up any
+     * applied events.
+     *
+     * @private
+     */
+    onDestroy: function () {
+      _.each(this._events, function (val, key) {
+        commander.removeHandler(val);
+      });
+    },
+    /**
      * Create any regions declared in layoutRegions.
      * Declared in class or passed in this.options
      *

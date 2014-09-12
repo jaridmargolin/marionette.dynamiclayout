@@ -229,11 +229,12 @@ describe('layoutController.js', function () {
       this.destroySpy.restore();
     });
 
-    it('Should call createItem.', function () {
+    it('Should call createItem and populate _items hash.', function () {
       this.myLayoutController.showInRegion('r1', this.item1);
 
       assert.equal(this.createSpy.args[0][0], this.myLayoutController._regions['r1']);
       assert.equal(this.createSpy.args[0][1], this.item1);
+      assert.ok(this.myLayoutController._items['r1:item1']);
     });
 
     it('Should call view.show.', function () {
@@ -250,11 +251,12 @@ describe('layoutController.js', function () {
       assert.ok(this.createSpy.calledOnce);
     });
 
-    it('Should call close on current controller if exists.', function () {
+    it('Should destroy/remove current controller if exists.', function () {
       this.myLayoutController.showInRegion('r1', this.item1);
       this.myLayoutController.showInRegion('r1', this.item2);
 
       assert.ok(this.destroySpy.calledOnce);
+      assert.notOk(this.myLayoutController._items['r1:item1']);
     });
 
     it('Should call callback if passed.', function () {
@@ -286,6 +288,42 @@ describe('layoutController.js', function () {
 
       assert.equal(item.name, this.item1.name);
       assert.ok(item.controller instanceof ItemController);
+    });
+
+  });
+
+
+
+  /* -----------------------------------------------------------------------------
+   * onDestroy
+   * ---------------------------------------------------------------------------*/
+
+  describe('onDestroy', function () {
+
+    beforeEach(function () {
+      this.props.regions = this.regionsObj;
+      this.MyLayoutController = LayoutController.extend(this.propsObj);
+      this.myLayoutController = new this.MyLayoutController();
+
+      commander.execute('main:r1:show', 'item1', ItemController);
+      this.item = this.myLayoutController._items['r1:item1'];
+
+      this.removeSpy = sinon.spy(commander, 'removeHandler');
+      this.destroySpy = sinon.spy(this.item.controller, 'destroy');
+
+      this.myLayoutController.destroy();
+    });
+
+    afterEach(function () {
+      this.removeSpy.restore();
+    });
+
+    it('Should remove handlers from commander', function () {
+      assert.ok(this.removeSpy.calledTwice);
+    });
+
+    it('Should destroy child controllers', function () {
+      assert.ok(this.destroySpy.calledOnce);
     });
 
   });

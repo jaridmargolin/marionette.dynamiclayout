@@ -13128,7 +13128,7 @@ layoutController = function (_, itemController, commander, LayoutView) {
       this.namespace = this.required('namespace');
       // Set up an empty array to hold reference to all
       // applied events (for cleanup).
-      this._events = [];
+      this._childEvents = [];
       // Set up an empty object responsible for managing
       // view regions and current state. 
       this._regions = {};
@@ -13149,8 +13149,11 @@ layoutController = function (_, itemController, commander, LayoutView) {
      * @private
      */
     onDestroy: function () {
-      _.each(this._events, function (val, key) {
-        commander.removeHandler(val);
+      _.each(this._childEvents, function (event) {
+        commander.removeHandler(event);
+      });
+      _.each(this._items, function (item) {
+        item.controller.destroy();
       });
     },
     /**
@@ -13200,7 +13203,7 @@ layoutController = function (_, itemController, commander, LayoutView) {
       region['current'] = {};
       // Add an event to show a specified controller view
       // in the region. Handler should be passed region name.
-      this._events.push(eventName);
+      this._childEvents.push(eventName);
       commander.setHandler(eventName, _.bind(this.onShow, this, name));
     },
     /**
@@ -13245,17 +13248,21 @@ layoutController = function (_, itemController, commander, LayoutView) {
      */
     showInRegion: function (regionName, item, done) {
       var region = this._regions[regionName];
-      var current = region.current;
-      var isDiff = current.name !== item.name;
       var name = [
           regionName,
           item.name
         ].join(':');
+      var current = region.current;
+      var curName = [
+          regionName,
+          current.name
+        ].join(':');
+      var isDiff = current.name !== item.name;
       // If it currently exists and is differnt
       // then we need to destroy/remove.
       if (isDiff && current.name && !item.preventClose) {
         current.controller.destroy();
-        delete this._items[current.name];
+        delete this._items[curName];
       }
       // Create a new item if it does not yet exist.
       if (isDiff && !this._items[name]) {
